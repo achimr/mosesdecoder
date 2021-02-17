@@ -142,7 +142,7 @@ sub preprocess {
 	$sentence_start .= "\\p{Block: Telugu}" if $language eq "te";
 	$sentence_start .= "\\p{Block: Hangul}\\p{Block: Hangul_Compatibility_Jamo}\\p{Block: Hangul_Jamo}\\p{Block: Hangul_Jamo_Extended_A}\\p{Block: Hangul_Jamo_Extended_B}" if $language eq "ko";
 	$sentence_start .= "\\p{Arabic}" if $language eq "fa";
-
+	
 	# we include danda and double danda (U+0964 and U+0965) as sentence split characters
 
 	# Non-period end of sentence markers (?!) followed by sentence starters.
@@ -201,6 +201,20 @@ sub preprocess {
 	        \s+
 	        ( [\'\"\x{201e}\x{bb}\(\[\¿\¡\p{IsPi}]*
 	          [\x{0600}-\x{06ff}]
+	          )
+	    }{$1\n$2}gx;
+	}
+
+    # Armenian support
+    # https://en.wikipedia.org/wiki/Armenian_alphabet#Character_encodings
+	if ($language eq 'hy') {
+	$text =~ s{
+	        ( (?: [\.\?!:\x{0589}] | \.\.+ )
+	          [\'\"\x{201e}\x{bb}\(\[\¿\¡\p{IsPf}]*
+	          )
+	        \s+
+	        ( [\'\"\x{201e}\x{bb}\(\[\¿\¡\p{IsPi}]*
+	          [\x{0530}-\x{058f}]
 	          )
 	    }{$1\n$2}gx;
 	}
